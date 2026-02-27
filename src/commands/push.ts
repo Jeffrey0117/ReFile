@@ -102,7 +102,7 @@ export function registerPushCommand(program: Command): void {
             meta: { mode: meta.mode, mtime: meta.mtime, atime: meta.atime },
           })
 
-          const refilePath = getRefilePath(filePath)
+          const refilePath = getRefilePath(filePath, mimeType)
           writeRefilePointer(refilePath, pointer)
 
           // Verify pointer was written before deleting original
