@@ -10,6 +10,8 @@ export const TRUSTED_HOSTS = new Set([
   'files.catbox.moe',
   'litter.catbox.moe',
   'pixeldrain.com',
+  'localhost',
+  '127.0.0.1',
 ])
 
 export function isAllowedMime(mime: string): boolean {
@@ -48,7 +50,12 @@ export function isVideoByMagicBytes(data: ArrayBuffer): boolean {
 export function isTrustedUrl(url: string): boolean {
   try {
     const parsed = new URL(url)
-    return parsed.protocol === 'https:' && TRUSTED_HOSTS.has(parsed.hostname)
+    if (!TRUSTED_HOSTS.has(parsed.hostname)) return false
+    // Allow http: only for localhost/127.0.0.1 (local dev)
+    if (parsed.protocol === 'http:') {
+      return parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1'
+    }
+    return parsed.protocol === 'https:'
   } catch {
     return false
   }

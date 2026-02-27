@@ -3,3 +3,4 @@ dist/
 *.tsbuildinfo
 .env
 .dev.vars
+nul

@@ -4,6 +4,7 @@ import { authMiddleware, type AuthEnv } from './middleware/auth'
 import { createUploadRoute, type UploadEnv } from './routes/upload'
 import { createServeRoute } from './routes/serve'
 import { createMetaRoute } from './routes/meta'
+import { createLocalServeRoute } from './routes/local-serve'
 
 type Env = AuthEnv & UploadEnv
 
@@ -15,6 +16,7 @@ app.use('*', corsMiddleware)
 // Public routes (no auth)
 app.route('/', createServeRoute())
 app.route('/', createMetaRoute())
+app.route('/', createLocalServeRoute())
 
 // Auth-protected routes
 app.use('/upload', authMiddleware)

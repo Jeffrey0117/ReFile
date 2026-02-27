@@ -4,6 +4,7 @@ import { isAllowedMime, isVideoByMagicBytes, MAX_UPLOAD_BYTES, URL_PREFIX, isTru
 import { runFallbackChain, type FallbackProvider } from '../fallback/chain'
 import { catboxProvider } from '../fallback/catbox'
 import { createPixeldrainProvider } from '../fallback/pixeldrain'
+import { createLocalKvProvider } from '../fallback/local-kv'
 
 export interface UploadEnv {
   API_KEY: string
@@ -75,10 +76,12 @@ export function createUploadRoute() {
       return c.json({ error: 'Hash collision detected. Please try again or contact support.' }, 409)
     }
 
-    // Build fallback chain: Pixeldrain (unlimited) → Catbox (≤200MB)
+    // Build fallback chain: Pixeldrain → Catbox → Local KV (dev fallback)
+    const baseUrl = new URL(c.req.url).origin
     const providers: FallbackProvider[] = [
       createPixeldrainProvider({ apiKey: c.env.PIXELDRAIN_KEY }),
       catboxProvider,
+      createLocalKvProvider(c.env.FILE_STORE, baseUrl),
     ]
 
     let result
