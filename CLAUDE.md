@@ -45,14 +45,29 @@ pull: 讀 pointer → 下載 → hash 驗證 → 還原檔案 + metadata → 刪
 - 最大 500MB per file
 - 部署：用 cloudpipe
 
+## 部署（CloudPipe）
+
+已部署到 CloudPipe，公網可用：
+- **URL**: `https://refile.isnowfriend.com`
+- **Port**: 4010
+- **buildCommand**: `cd server && npm install --include=dev && npm run build`
+- **entryFile**: `server/dist/index.js`
+- **healthEndpoint**: `/health`
+- **.env** 放在 `cloudpipe/projects/refile/.env`（不是 server/ 裡）
+
+注意：CloudPipe build 時 `npm install` 預設不裝 devDependencies，要加 `--include=dev` 才有 `tsc`。
+
 ## 跑法
 
 ```bash
-# Server
+# 本地開發
 cd server && API_KEY=your-key npm run dev
 
+# 部署（push 到 GitHub 自動觸發，或手動）
+# CloudPipe dashboard: http://localhost:8787/_admin
+
 # CLI
-refile init          # 選 Self-hosted, 填 server URL
+refile init          # 選 Self-hosted, 填 https://refile.isnowfriend.com
 refile push ./files  # 上傳 + 虛擬化
 refile pull ./files  # 拉回還原
 refile status        # 看空間節省統計
