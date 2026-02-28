@@ -1,6 +1,6 @@
 import type { Command } from 'commander'
 import { loadConfig, saveConfig, getConfigPath } from '../config/config.js'
-import type { RefileConfig, HttpUploadConfig, S3Config } from '../config/types.js'
+import type { RefileConfig, HttpUploadConfig, S3Config, SelfHostedConfig } from '../config/types.js'
 import { log } from '../utils/logger.js'
 
 async function prompt(question: string, defaultValue?: string): Promise<string> {
@@ -34,6 +34,7 @@ export function registerInitCommand(program: Command): void {
       const existing = loadConfig()
 
       const backendIdx = await choose('Choose storage backend:', [
+        'Self-hosted (refile-server)',
         'HTTP Upload (urusai.cc compatible)',
         'S3-compatible (MinIO / AWS S3 / Cloudflare R2)',
       ])
@@ -41,6 +42,23 @@ export function registerInitCommand(program: Command): void {
       let config: RefileConfig
 
       if (backendIdx === 0) {
+        const endpoint = await prompt('Server URL', 'http://localhost:3900')
+        const apiKey = await prompt('API key (leave blank if none)', '')
+
+        const selfHostedConfig: SelfHostedConfig = {
+          type: 'self-hosted',
+          endpoint,
+          apiKey,
+        }
+
+        config = {
+          defaultBackend: 'self-hosted',
+          backends: {
+            ...existing?.backends,
+            'self-hosted': selfHostedConfig,
+          },
+        }
+      } else if (backendIdx === 1) {
         const endpoint = await prompt('Upload endpoint', 'https://api.urusai.cc/v1/upload')
         const fieldName = await prompt('Form field name', 'file')
         const responseUrlPath = await prompt('Response URL path (dot-notation)', 'data.url_direct')
