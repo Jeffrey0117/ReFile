@@ -33,16 +33,37 @@
     "productName": "ReFile",
     "files": [
       "dist/**/*",
-      "electron/**/*"
+      "electron/**/*",
+      "!node_modules/**/*"
     ],
     "win": {
       "target": "nsis",
       "fileAssociations": [
-        { "ext": "refile", "name": "ReFile Virtual File", "role": "Viewer" },
-        { "ext": "repic", "name": "Virtual Image", "role": "Viewer" },
-        { "ext": "revid", "name": "Virtual Video", "role": "Viewer" },
-        { "ext": "remusic", "name": "Virtual Audio", "role": "Viewer" }
+        {
+          "ext": "refile",
+          "name": "ReFile Virtual File",
+          "role": "Viewer"
+        },
+        {
+          "ext": "repic",
+          "name": "Virtual Image",
+          "role": "Viewer"
+        },
+        {
+          "ext": "revid",
+          "name": "Virtual Video",
+          "role": "Viewer"
+        },
+        {
+          "ext": "remusic",
+          "name": "Virtual Audio",
+          "role": "Viewer"
+        }
       ]
+    },
+    "npmRebuild": false,
+    "directories": {
+      "output": "release"
     }
   }
 }
